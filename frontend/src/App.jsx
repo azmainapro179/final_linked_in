@@ -1,13 +1,16 @@
 import { useMemo, useRef, useState } from 'react'
 import './App.css'
 import {
+  emptyProfile,
   feedSuggestions,
   highlights,
   homeFeedPosts,
   searchFilters,
   starterForm,
 } from './config/appConstants.js'
+import AuthPage from './pages/AuthPage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
+import UserProfilePage from './pages/UserProfilePage.jsx'
 
 const directory = [
   { id: 'person-1', type: 'person', title: 'Amina Rahman', subtitle: 'Product Designer' },
@@ -25,21 +28,19 @@ function App() {
   const [userName, setUserName] = useState('')
   const [userEmail, setUserEmail] = useState('')
   const [userHeadline, setUserHeadline] = useState('')
+  const [selectedUser, setSelectedUser] = useState(null)
   const [activeFilter, setActiveFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [searchDropdownOpen, setSearchDropdownOpen] = useState(false)
-  const [recentSearches, setRecentSearches] = useState(['Product design', 'bKash'])
+  const [recentSearches, setRecentSearches] = useState(['Amina Rahman', 'BUET'])
   const [hasSubmittedSearch, setHasSubmittedSearch] = useState(false)
   const searchBlurTimeoutRef = useRef(null)
 
-  const formTitle = mode === 'signin' ? 'Welcome back' : 'Create your account'
+  const formTitle = view === 'auth' ? (mode === 'signin' ? 'Welcome back' : 'Create account') : 'Profile Setup'
   const ctaLabel = mode === 'signin' ? 'Sign in' : 'Create account'
   const heroHeadline = useMemo(
-    () =>
-      mode === 'signin'
-        ? 'Version 2 introduces the dashboard and discovery surface.'
-        : 'Search and feed UI now sit on top of the original app shell.',
-    [mode],
+    () => 'Version 3 introduces reusable auth, profile, and navigation pages.',
+    [],
   )
 
   const searchDropdownItems = searchQuery.trim().length >= 2
@@ -57,6 +58,23 @@ function App() {
     if (activeFilter === 'all') return item.title.toLowerCase().includes(searchQuery.toLowerCase())
     return item.type === activeFilter.slice(0, -1) && item.title.toLowerCase().includes(searchQuery.toLowerCase())
   })
+
+  const selectedProfile =
+    selectedUser ||
+    {
+      id: 'self',
+      fullName: userName,
+      email: userEmail,
+      headline: userHeadline,
+      profile: {
+        workHistory: [
+          { company: 'LINKEDIN', title: 'Frontend App Shell Owner', start: '2025-01', end: '', current: true },
+        ],
+        education: emptyProfile.education,
+        skills: ['React', 'UI State', 'Navigation'],
+        interests: ['Product Design', 'Search UX'],
+      },
+    }
 
   const updateField = (field) => (event) => {
     setForm((current) => ({ ...current, [field]: event.target.value }))
@@ -76,11 +94,11 @@ function App() {
     }
 
     setLoading(true)
-    setStatus({ type: 'pending', message: 'Loading the dashboard experience...' })
+    setStatus({ type: 'pending', message: 'Activating version 3…' })
     await new Promise((resolve) => window.setTimeout(resolve, 150))
-    setUserName(form.fullName.trim() || 'Member Two')
+    setUserName(form.fullName.trim() || 'Member Three')
     setUserEmail(form.email.trim())
-    setUserHeadline(form.headline.trim() || 'Dashboard and Discovery UX')
+    setUserHeadline(form.headline.trim() || 'Profile and Onboarding Experience')
     setView('dashboard')
     setLoading(false)
     setStatus({ type: 'success', message: 'Ready.' })
@@ -98,8 +116,25 @@ function App() {
     setRecentSearches((current) => [searchQuery.trim(), ...current.filter((item) => item !== searchQuery.trim())].slice(0, 5))
   }
 
-  const handleFilterChange = (nextFilter) => {
-    setActiveFilter(nextFilter)
+  if (view === 'viewProfile') {
+    return (
+      <UserProfilePage
+        selectedUser={selectedProfile}
+        userId="self"
+        userName={userName}
+        connected={[]}
+        pending={[]}
+        invited={[]}
+        onGoToDashboard={() => setView('dashboard')}
+        onGoBackToSearch={() => setView('dashboard')}
+        onLogout={() => setView('auth')}
+        onRemoveConnection={() => {}}
+        onCancelInvite={() => {}}
+        onAcceptInvite={() => {}}
+        onRejectInvite={() => {}}
+        onConnect={() => {}}
+      />
+    )
   }
 
   if (view === 'dashboard') {
@@ -113,7 +148,7 @@ function App() {
           setSearchQuery('')
           setHasSubmittedSearch(false)
         }}
-        handleFilterChange={handleFilterChange}
+        handleFilterChange={setActiveFilter}
         handleLogout={() => {
           setView('auth')
           setForm(starterForm)
@@ -125,7 +160,7 @@ function App() {
         homeFeedPosts={homeFeedPosts}
         onSearchDropdownClose={() => setSearchDropdownOpen(false)}
         onSearchDropdownOpen={() => setSearchDropdownOpen(true)}
-        onViewOwnProfile={() => {}}
+        onViewOwnProfile={() => setView('viewProfile')}
         recentSearches={recentSearches}
         searchBlurTimeoutRef={searchBlurTimeoutRef}
         searchDropdownItems={searchDropdownItems}
@@ -143,75 +178,42 @@ function App() {
   }
 
   return (
-    <div className="page">
-      <div className="halo" />
-      <div className="grid-accent" />
-      <div className="frame">
-        <aside className="brand-panel">
-          <div className="wordmark">
-            <div className="mark">in</div>
-            <span className="brand">LINKEDIN</span>
-          </div>
-          <h1>{heroHeadline}</h1>
-          <p className="lede">The second version adds the main dashboard and search discovery layer.</p>
-          <div className="highlight-list">
-            {highlights.map((item) => (
-              <div key={item} className="highlight">
-                <span className="dot" />
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
-        </aside>
-
-        <main className="panel">
-          <div className="panel-header">
-            <div className="pill">
-              <button type="button" className={mode === 'signin' ? 'active' : ''} onClick={() => switchMode('signin')}>
-                Sign in
-              </button>
-              <button type="button" className={mode === 'signup' ? 'active' : ''} onClick={() => switchMode('signup')}>
-                Sign up
-              </button>
-            </div>
-          </div>
-
-          <div className="panel-body">
-            <div className="panel-title">{formTitle}</div>
-            <form className="form" onSubmit={handleSubmit}>
-              {mode === 'signup' && (
-                <label className="field">
-                  <span>Full name</span>
-                  <input type="text" value={form.fullName} onChange={updateField('fullName')} />
-                </label>
-              )}
-
-              <label className="field">
-                <span>Email</span>
-                <input type="email" value={form.email} onChange={updateField('email')} />
-              </label>
-
-              {mode === 'signup' && (
-                <label className="field">
-                  <span>Headline</span>
-                  <input type="text" value={form.headline} onChange={updateField('headline')} />
-                </label>
-              )}
-
-              <label className="field">
-                <span>Password</span>
-                <input type="password" value={form.password} onChange={updateField('password')} />
-              </label>
-
-              <button className="cta" type="submit" disabled={loading}>
-                {loading ? 'Loading…' : ctaLabel}
-              </button>
-            </form>
-            <div className={`status ${status.type}`}>{status.message || 'Try the discovery layer.'}</div>
-          </div>
-        </main>
-      </div>
-    </div>
+    <AuthPage
+      view="auth"
+      mode={mode}
+      formTitle={formTitle}
+      ctaLabel={ctaLabel}
+      heroHeadline={heroHeadline}
+      highlights={highlights}
+      API_BASE="Local incremental demo"
+      form={form}
+      updateField={updateField}
+      handleSubmit={handleSubmit}
+      switchMode={switchMode}
+      loading={loading}
+      disabled={loading}
+      status={status}
+      profileStatus={{ type: 'idle', message: 'Profile setup arrives in the next version.' }}
+      handleProfileSubmit={(event) => event.preventDefault()}
+      workHistory={emptyProfile.workHistory}
+      updateWorkItem={() => {}}
+      addWorkRow={() => {}}
+      removeWorkRow={() => {}}
+      education={emptyProfile.education}
+      addEduRow={() => {}}
+      updateEduItem={() => {}}
+      removeEduRow={() => {}}
+      skills={[]}
+      setSkills={() => {}}
+      removeTag={() => {}}
+      skillInput=""
+      setSkillInput={() => {}}
+      addTag={() => {}}
+      interests={[]}
+      setInterests={() => {}}
+      interestInput=""
+      setInterestInput={() => {}}
+    />
   )
 }
 
