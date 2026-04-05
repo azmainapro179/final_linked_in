@@ -5,6 +5,8 @@ import mysql from 'mysql2/promise'
 import { ensureSchema } from './src/db/schema.js'
 import { handleAuthRoutes } from './src/routes/authRoutes.js'
 import { handleConnectionRoutes } from './src/routes/connectionRoutes.js'
+import { handleDirectoryRoutes } from './src/routes/directoryRoutes.js'
+import { handleNetworkRoutes } from './src/routes/networkRoutes.js'
 import { handleNotificationRoutes } from './src/routes/notificationRoutes.js'
 import { parseBody, send } from './src/utils/http.js'
 
@@ -26,6 +28,8 @@ const routeHandlers = [
   handleAuthRoutes,
   handleConnectionRoutes,
   handleNotificationRoutes,
+  handleNetworkRoutes,
+  handleDirectoryRoutes,
 ]
 
 const serverContext = {
