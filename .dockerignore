@@ -1,0 +1,7 @@
+node_modules
+.git
+.github
+.idx
+frontend/dist
+backend/.env.local
+npm-debug.log*
