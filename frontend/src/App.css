@@ -1,0 +1,165 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background:
+    radial-gradient(circle at top left, rgba(96, 165, 250, 0.25), transparent 35%),
+    linear-gradient(135deg, #07111f 0%, #0d1b2f 60%, #102544 100%);
+}
+
+.frame,
+.shell-card {
+  width: min(1040px, 100%);
+  display: grid;
+  gap: 24px;
+  background: rgba(7, 17, 31, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+}
+
+.frame {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+.brand-panel,
+.panel,
+.shell-panel {
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: 22px;
+  padding: 24px;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.mark {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #1d4ed8;
+}
+
+.brand {
+  letter-spacing: 0.14em;
+}
+
+.highlight-list,
+.form,
+.shell-layout {
+  display: grid;
+  gap: 14px;
+}
+
+.highlight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #60a5fa;
+}
+
+.pill {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  background: rgba(148, 163, 184, 0.12);
+  border-radius: 999px;
+}
+
+.pill button,
+.cta,
+.secondary-btn {
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.pill button {
+  padding: 10px 16px;
+  background: transparent;
+  color: inherit;
+}
+
+.pill button.active,
+.cta {
+  background: #2563eb;
+  color: #fff;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.8);
+  color: inherit;
+}
+
+.cta,
+.secondary-btn {
+  padding: 14px 18px;
+}
+
+.secondary-btn {
+  background: rgba(148, 163, 184, 0.16);
+  color: inherit;
+}
+
+.status {
+  margin-top: 16px;
+  color: #cbd5e1;
+}
+
+.status.error {
+  color: #fca5a5;
+}
+
+.status.success {
+  color: #86efac;
+}
+
+.status.pending {
+  color: #93c5fd;
+}
+
+.shell-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.shell-layout {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.shell-panel ul {
+  margin: 12px 0 0;
+  padding-left: 18px;
+}
+
+@media (max-width: 860px) {
+  .frame,
+  .shell-layout {
+    grid-template-columns: 1fr;
+  }
+}

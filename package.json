@@ -1,0 +1,17 @@
+{
+  "name": "linkedin-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "lint": "npm --prefix frontend run lint",
+    "preview": "npm --prefix frontend run preview",
+    "start": "npm --prefix backend run start",
+    "server": "npm --prefix backend run server"
+  }
+}
